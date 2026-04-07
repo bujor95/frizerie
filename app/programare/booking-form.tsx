@@ -3,12 +3,12 @@
 import { useState, useTransition } from "react";
 import { createBooking } from "../actions";
 import { SERVICES, BARBERS, TIME_SLOTS } from "@/lib/data";
+import { Calendar } from "./calendar";
 
 export function BookingForm() {
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
-
-  const today = new Date().toISOString().slice(0, 10);
+  const [date, setDate] = useState("");
 
   return (
     <form
@@ -51,17 +51,17 @@ export function BookingForm() {
         </select>
       </Field>
 
-      <div className="grid sm:grid-cols-2 gap-5">
-        <Field label="Data">
-          <input name="date" type="date" required min={today} className={input} />
-        </Field>
-        <Field label="Ora">
-          <select name="time" required defaultValue="" className={input}>
-            <option value="" disabled>Alege ora...</option>
-            {TIME_SLOTS.map((t) => <option key={t} value={t}>{t}</option>)}
-          </select>
-        </Field>
-      </div>
+      <Field label="Data">
+        <Calendar value={date} onChange={setDate} />
+        <input type="hidden" name="date" value={date} required />
+      </Field>
+
+      <Field label="Ora">
+        <select name="time" required defaultValue="" className={input}>
+          <option value="" disabled>Alege ora...</option>
+          {TIME_SLOTS.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </Field>
 
       <button
         type="submit"
